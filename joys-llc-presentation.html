@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joys LLC - Cybersecurity Solutions (Print Version)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .slide {
+                page-break-after: always;
+                page-break-inside: avoid;
+                width: 100%;
+                height: 100vh;
+                display: block !important;
+                opacity: 1 !important;
+                position: relative !important;
+                transform: none !important;
+            }
+            
+            .slide:last-child {
+                page-break-after: avoid;
+            }
+            
+            .navigation, .mode-toggle {
+                display: none !important;
+            }
+            
+            .logo {
+                color: #FF6B35 !important;
+            }
+            
+            h1, h2, h3 {
+                color: #FF6B35 !important;
+            }
+            
+            .product-card, .pricing-tier, .stat-item {
+                border: 2px solid #FF6B35 !important;
+                background: #f8f9fa !important;
+            }
+            
+            .pricing-info {
+                background: #FF6B35 !important;
+                color: white !important;
+            }
+            
+            .tech-tag {
+                border: 1px solid #8B5CF6 !important;
+                background: #f0f0f0 !important;
+                color: #8B5CF6 !important;
+            }
+        }
+        
+        .presentation-container {
+            width: 100%;
+            min-height: 100vh;
+        }
+        
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 107, 53, 0.2);
+            border: 2px solid #FF6B35;
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: #FF6B35;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+        
+        .mode-toggle:hover {
+            background: #FF6B35;
+            color: white;
+        }
+        
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            padding: 60px 80px;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+        }
+        
+        .slide.print-mode {
+            display: flex !important;
+            flex-direction: column;
+            opacity: 1 !important;
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        
+        .slide-header {
+            margin-bottom: 40px;
+        }
+        
+        .slide-number {
+            color: #FF6B35;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FF6B35 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+        
+        h3 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #FF6B35;
+        }
+        
+        .subtitle {
+            font-size: 1.4em;
+            color: #a0a0a0;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+        }
+        
+        .product-title {
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #FF6B35;
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .pricing-info {
+            background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            color: white;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tech-tag {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8B5CF6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 107, 53, 0.2);
+            color: #FF6B35;
+            border: 2px solid #FF6B35;
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover {
+            background: #FF6B35;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .feature-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #FF6B35;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+        
+        .logo .joys {
+            color: #FF6B35;
+        }
+        
+        .logo .llc {
+            color: #8B5CF6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            color: #a0a0a0;
+        }
+        
+        .pricing-table {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .pricing-tier {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .pricing-tier:hover {
+            transform: translateY(-5px);
+            border-color: #FF6B35;
+        }
+        
+        .pricing-tier.featured {
+            border-color: #8B5CF6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+        
+        .tier-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #FF6B35;
+        }
+        
+        .tier-price {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .flow-box {
+            background: rgba(255, 107, 53, 0.1);
+            border: 2px solid #FF6B35;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .flow-arrow {
+            color: #8B5CF6;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 40px;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            h2 {
+                font-size: 2em;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-table {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="logo">
+            <span class="joys">THE JOYS</span> <span class="llc">LLC.</span>
+        </div>
+        
+        <button class="mode-toggle" onclick="togglePrintMode()">📊 Presentation Mode / 📄 Print Mode</button>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>Cybersecurity Solutions Portfolio</h1>
+                <div class="subtitle">AI-Powered Security Products for Modern Enterprises</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">Product Lines</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">$5K-$1M+</div>
+                        <div class="stat-label">Revenue Range</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">B2B</div>
+                        <div class="stat-label">SaaS Focus</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Product Overview -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">Product Portfolio</div>
+                <h2>Our Cybersecurity Solutions</h2>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <div class="product-card">
+                            <div class="product-title">AI-Powered Secure Code Assistant</div>
+                            <div class="product-description">Automated vulnerability detection with AI-generated remediation suggestions</div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-title">Autonomous AI Red Team</div>
+                            <div class="product-description">Continuous penetration testing using AI-driven attack simulation</div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-title">Human-AI Hybrid SOC for SMBs</div>
+                            <div class="product-description">Managed security operations center with AI-powered threat detection</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="product-card">
+                            <div class="product-title">AI Phishing Defense App</div>
+                            <div class="product-description">Cyber Guardian - Real-time phishing protection for emails and communications</div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-title">AI-Driven Zero Trust Orchestrator</div>
+                            <div class="product-description">Intelligent access control and security policy enforcement</div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-title">Privacy-Preserving AI Analytics</div>
+                            <div class="product-description">Secure data analysis platform with differential privacy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Flagship Product -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">Featured Product</div>
+                <h2>AI-Powered Vulnerability Scanner</h2>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3>Key Features</h3>
+                        <ul class="feature-list">
+                            <li>Real-time CI/CD pipeline integration</li>
+                            <li>AI-generated remediation suggestions</li>
+                            <li>False positive elimination</li>
+                            <li>Natural language vulnerability reports</li>
+                            <li>Enterprise-ready scaling</li>
+                        </ul>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-tag">GPT/CodeBERT</span>
+                            <span class="tech-tag">OWASP ZAP</span>
+                            <span class="tech-tag">Python/FastAPI</span>
+                            <span class="tech-tag">Docker/Kubernetes</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>How It Works</h3>
+                        <div class="flow-diagram">
+                            <div class="flow-box">Codebase</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">Scanner</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">AI Model</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">Fix Report</div>
+                        </div>
+                        
+                        <div class="pricing-info">
+                            Freemium → Pro ($10-20/dev/month) → Enterprise
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Autonomous Pentesting -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">Advanced Security</div>
+                <h2>Autonomous Penetration Testing Agent</h2>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3>Revolutionary Approach</h3>
+                        <ul class="feature-list">
+                            <li>Continuous attack surface mapping</li>
+                            <li>Reinforcement learning adaptation</li>
+                            <li>Metasploit framework integration</li>
+                            <li>Real-world hacker simulation</li>
+                            <li>Automated exploit testing</li>
+                        </ul>
+                        
+                        <h3>Differentiation</h3>
+                        <div class="product-description">
+                            Unlike manual penetration testing that costs $15K-50K+ per engagement, our AI agent provides continuous testing at a fraction of the cost.
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Technical Architecture</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Reinforcement Learning</span>
+                            <span class="tech-tag">LangChain</span>
+                            <span class="tech-tag">Metasploit</span>
+                            <span class="tech-tag">Python/FastAPI</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">Grafana</span>
+                        </div>
+                        
+                        <div class="pricing-table">
+                            <div class="pricing-tier">
+                                <div class="tier-name">Starter</div>
+                                <div class="tier-price">$5K/mo</div>
+                                <div>Small deployments</div>
+                            </div>
+                            <div class="pricing-tier featured">
+                                <div class="tier-name">Professional</div>
+                                <div class="tier-price">$15K/mo</div>
+                                <div>Medium enterprises</div>
+                            </div>
+                            <div class="pricing-tier">
+                                <div class="tier-name">Enterprise</div>
+                                <div class="tier-price">$20K+/mo</div>
+                                <div>Large organizations</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: SOC for SMBs -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">SMB Solutions</div>
+                <h2>AI SOC-as-a-Service for SMBs</h2>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3>Problem Statement</h3>
+                        <div class="product-description">
+                            Small and medium businesses cannot afford full-time security teams or expensive SOC infrastructure, leaving them vulnerable to cyber threats.
+                        </div>
+                        
+                        <h3>Our Solution</h3>
+                        <ul class="feature-list">
+                            <li>24/7 AI-powered monitoring</li>
+                            <li>Real-time anomaly detection</li>
+                            <li>Automated alert correlation</li>
+                            <li>False positive reduction</li>
+                            <li>Easy-to-understand dashboards</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Technical Implementation</h3>
+                        <div class="flow-diagram">
+                            <div class="flow-box">Endpoints</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">ELK Stack</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">AI Detection</div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-box">Alerts</div>
+                        </div>
+                        
+                        <div class="tech-stack">
+                            <span class="tech-tag">Transformer Models</span>
+                            <span class="tech-tag">ELK Stack</span>
+                            <span class="tech-tag">Apache Kafka</span>
+                            <span class="tech-tag">AWS/GCP</span>
+                        </div>
+                        
+                        <div class="pricing-info">
+                            $200-500/month (Basic) → $1,000+/month (Professional)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Comprehensive Pricing Strategy -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">Pricing Strategy</div>
+                <h2>Revenue Model Overview</h2>
+            </div>
+            <div class="content">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;">
+                    <div class="product-card">
+                        <div class="product-title">AI Code Assistant</div>
+                        <div class="pricing-info">$30-100/user/month</div>
+                        <div class="product-description">Per-seat SaaS model targeting developers and development teams</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-title">Autonomous Red Team</div>
+                        <div class="pricing-info">$5K-20K/month</div>
+                        <div class="product-description">Tiered subscription based on organization size and testing scope</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-title">AI SOC for SMBs</div>
+                        <div class="pricing-info">$2K-10K/month</div>
+                        <div class="product-description">Managed service pricing by log volume and endpoints</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-title">Phishing Defense</div>
+                        <div class="pricing-info">$5-10/user/month</div>
+                        <div class="product-description">Freemium to premium model for mass market adoption</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-title">Zero Trust Orchestrator</div>
+                        <div class="pricing-info">$10-30/user/month</div>
+                        <div class="product-description">Enterprise SaaS per user/device pricing model</div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-title">Quantum-Resistant Security</div>
+                        <div class="pricing-info">$250K-1M+/year</div>
+                        <div class="product-description">Enterprise/government licensing for critical infrastructure</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Market Positioning -->
+        <div class="slide">
+            <div class="slide-header">
+                <div class="slide-number">Market Strategy</div>
+                <h2>Competitive Advantage & Positioning</h2>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3>Key Differentiators</h3>
+                        <ul class="feature-list">
+                            <li>AI-first approach to cybersecurity</li>
+                            <li>Comprehensive product portfolio</li>
+                            <li>SMB-friendly pricing models</li>
+                            <li>Automated threat response</li>
+                            <li>Continuous learning and adaptation</li>
+                        </ul>
+                        
+                        <h3>Target Markets</h3>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Developers</span>
+                            <span class="tech-tag">SMBs</span>
+                            <span class="tech-tag">Enterprises</span>
+                            <span class="tech-tag">Government</span>
+                            <span class="tech-tag">MSPs</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Revenue Potential</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">$10K-1M+</div>
+                                <div class="stat-label">Annual Revenue Range</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">B2B SaaS</div>
+                                <div class="stat-label">Primary Model</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">Scalable</div>
+                                <div class="stat-label">Growth Strategy</div>
+                            </div>
+                        </div>
+                        
+                        <h3>Go-to-Market Strategy</h3>
+                        <div class="product-description">
+                            Freemium adoption for developers, direct enterprise sales, and MSP partnerships for SMB market penetration.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+            <button class="nav-btn" onclick="exportFullPDF()">📄 Export Full PDF</button>
+        </div>
+        
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">7</span>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlide = 0;
+        let printMode = false;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            if (!printMode) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (n + totalSlides) % totalSlides;
+                slides[currentSlide].classList.add('active');
+                document.getElementById('current-slide').textContent = currentSlide + 1;
+            }
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        function togglePrintMode() {
+            printMode = !printMode;
+            const navigation = document.querySelector('.navigation');
+            const slideCounter = document.querySelector('.slide-counter');
+            
+            if (printMode) {
+                // Show all slides for printing
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                    slide.classList.add('print-mode');
+                });
+                navigation.style.display = 'none';
+                slideCounter.style.display = 'none';
+            } else {
+                // Return to presentation mode
+                slides.forEach(slide => {
+                    slide.classList.remove('print-mode');
+                });
+                slides[currentSlide].classList.add('active');
+                navigation.style.display = 'flex';
+                slideCounter.style.display = 'block';
+            }
+        }
+        
+        function exportFullPDF() {
+            // Switch to print mode, print, then switch back
+            const wasInPrintMode = printMode;
+            if (!printMode) {
+                togglePrintMode();
+            }
+            
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    if (!wasInPrintMode) {
+                        togglePrintMode();
+                    }
+                }, 1000);
+            }, 500);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (!printMode) {
+                if (event.key === 'ArrowRight' || event.key === ' ') {
+                    nextSlide();
+                } else if (event.key === 'ArrowLeft') {
+                    previousSlide();
+                } else if (event.key === 'p' || event.key === 'P') {
+                    exportFullPDF();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
