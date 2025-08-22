@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joys LLC - Cybersecurity Solutions (Print Version)</title>
+    <title>Joys LLC - Cybersecurity Solutions</title>
     <style>
         * {
             margin: 0;
@@ -18,80 +18,9 @@
             line-height: 1.6;
         }
         
-        /* Print-specific styles */
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-            }
-            
-            .slide {
-                page-break-after: always;
-                page-break-inside: avoid;
-                width: 100%;
-                height: 100vh;
-                display: block !important;
-                opacity: 1 !important;
-                position: relative !important;
-                transform: none !important;
-            }
-            
-            .slide:last-child {
-                page-break-after: avoid;
-            }
-            
-            .navigation, .mode-toggle {
-                display: none !important;
-            }
-            
-            .logo {
-                color: #FF6B35 !important;
-            }
-            
-            h1, h2, h3 {
-                color: #FF6B35 !important;
-            }
-            
-            .product-card, .pricing-tier, .stat-item {
-                border: 2px solid #FF6B35 !important;
-                background: #f8f9fa !important;
-            }
-            
-            .pricing-info {
-                background: #FF6B35 !important;
-                color: white !important;
-            }
-            
-            .tech-tag {
-                border: 1px solid #8B5CF6 !important;
-                background: #f0f0f0 !important;
-                color: #8B5CF6 !important;
-            }
-        }
-        
         .presentation-container {
             width: 100%;
             min-height: 100vh;
-        }
-        
-        .mode-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: rgba(255, 107, 53, 0.2);
-            border: 2px solid #FF6B35;
-            border-radius: 25px;
-            padding: 10px 20px;
-            color: #FF6B35;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            font-weight: 600;
-        }
-        
-        .mode-toggle:hover {
-            background: #FF6B35;
-            color: white;
         }
         
         .slide {
@@ -108,14 +37,6 @@
             display: flex;
             flex-direction: column;
             opacity: 1;
-        }
-        
-        .slide.print-mode {
-            display: flex !important;
-            flex-direction: column;
-            opacity: 1 !important;
-            page-break-after: always;
-            page-break-inside: avoid;
         }
         
         .slide-header {
@@ -435,8 +356,6 @@
             <span class="joys">THE JOYS</span> <span class="llc">LLC.</span>
         </div>
         
-        <button class="mode-toggle" onclick="togglePrintMode()">📊 Presentation Mode / 📄 Print Mode</button>
-        
         <!-- Slide 1: Title -->
         <div class="slide active">
             <div class="content">
@@ -750,7 +669,6 @@
         <div class="navigation">
             <button class="nav-btn" onclick="previousSlide()">← Previous</button>
             <button class="nav-btn" onclick="nextSlide()">Next →</button>
-            <button class="nav-btn" onclick="exportFullPDF()">📄 Export Full PDF</button>
         </div>
         
         <div class="slide-counter">
@@ -760,19 +678,16 @@
     
     <script>
         let currentSlide = 0;
-        let printMode = false;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
         
         document.getElementById('total-slides').textContent = totalSlides;
         
         function showSlide(n) {
-            if (!printMode) {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (n + totalSlides) % totalSlides;
-                slides[currentSlide].classList.add('active');
-                document.getElementById('current-slide').textContent = currentSlide + 1;
-            }
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
         }
         
         function nextSlide() {
@@ -783,57 +698,12 @@
             showSlide(currentSlide - 1);
         }
         
-        function togglePrintMode() {
-            printMode = !printMode;
-            const navigation = document.querySelector('.navigation');
-            const slideCounter = document.querySelector('.slide-counter');
-            
-            if (printMode) {
-                // Show all slides for printing
-                slides.forEach(slide => {
-                    slide.classList.remove('active');
-                    slide.classList.add('print-mode');
-                });
-                navigation.style.display = 'none';
-                slideCounter.style.display = 'none';
-            } else {
-                // Return to presentation mode
-                slides.forEach(slide => {
-                    slide.classList.remove('print-mode');
-                });
-                slides[currentSlide].classList.add('active');
-                navigation.style.display = 'flex';
-                slideCounter.style.display = 'block';
-            }
-        }
-        
-        function exportFullPDF() {
-            // Switch to print mode, print, then switch back
-            const wasInPrintMode = printMode;
-            if (!printMode) {
-                togglePrintMode();
-            }
-            
-            setTimeout(() => {
-                window.print();
-                setTimeout(() => {
-                    if (!wasInPrintMode) {
-                        togglePrintMode();
-                    }
-                }, 1000);
-            }, 500);
-        }
-        
         // Keyboard navigation
         document.addEventListener('keydown', function(event) {
-            if (!printMode) {
-                if (event.key === 'ArrowRight' || event.key === ' ') {
-                    nextSlide();
-                } else if (event.key === 'ArrowLeft') {
-                    previousSlide();
-                } else if (event.key === 'p' || event.key === 'P') {
-                    exportFullPDF();
-                }
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                previousSlide();
             }
         });
     </script>
